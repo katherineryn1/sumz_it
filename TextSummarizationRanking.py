@@ -11,7 +11,7 @@ def textSummarizationUsingRanking(txt):
     word_frequency = featureExtraction(whole_text, corpus)
     # 
     sorted_word_frequency = getRelativeFrequencyOfWords(word_frequency)
-    #
+    # 
     sentences_ranking, top_sentences = getSentenceRanking(sorted_word_frequency, doc)
     # 
     summary = getSummaryText(sentences_ranking, top_sentences)

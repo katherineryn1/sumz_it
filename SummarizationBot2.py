@@ -28,4 +28,4 @@ async def summarize(context, *arg):
     summarizeText = textSummarizationUsingRanking(arg)
     await context.send(summarizeText)
 
-bot.run('NzgxNDIyMzA3ODYzMTY3MDI2.X79aPA.YPzJ_K8IZXebCJWUi24ycADgtNE')
+bot.run('#')

@@ -7,13 +7,13 @@ def textSummarizationUsingRanking(txt):
     whole_text = readWholeText(txt)
     # Get corpus from whole text
     corpus, doc = getCorpus(whole_text)
-    # 
+    # Count word frequency in text
     word_frequency = featureExtraction(whole_text, corpus)
-    # 
+    # Sort word frequency and get new value for word frequency (divided by highest freq)
     sorted_word_frequency = getRelativeFrequencyOfWords(word_frequency)
-    # 
+    # Set the sentence ranking and top score of sentence
     sentences_ranking, top_sentences = getSentenceRanking(sorted_word_frequency, doc)
-    # 
+    # Get the summarization
     summary = getSummaryText(sentences_ranking, top_sentences)
 
     return summary
@@ -31,6 +31,15 @@ def getCorpus(text):
 
     # Lower case the text    
     corpus = [sent.text.lower() for sent in doc.sents]
+
+    # Define the global variable
+    global text_len
+    text_len = 0
+    # Count the text length
+    for sent in doc.sents:
+        text_len += len(sent)
+    print("\nText length: ", text_len)
+
     return corpus, doc
 
 def featureExtraction(text, corpus):
@@ -46,22 +55,29 @@ def featureExtraction(text, corpus):
     return word_frequency
 
 def getRelativeFrequencyOfWords(frequency):
+    # Sort the frequency value we got before
     val = sorted(frequency.values())
     print("Values: ")
     print(val)
 
+    # Take word which the value is in top 3 highest value from the list
     higher_word_frequency = [word for word, freq in frequency.items() if freq in val[-3:]]
     print("\nWords with higher frequencies: ")
     print(higher_word_frequency)
     
+    # Take the highest value from the list 
     higher_frequency = val[-1]
     for word in frequency.keys():
+        # Update the value of each word in dictionary with new value
         frequency[word] = (frequency[word] / higher_frequency)
     return frequency
 
+# Create sentence ranking from each word value
 def getSentenceRanking(frequency, doc):
     sentence_rank = {}
+    # For each sentence in text
     for sent in doc.sents:
+        # For each word in sentence
         for word in sent:
             if word.text.lower() in frequency.keys():
                 if sent in sentence_rank.keys():
@@ -86,10 +102,16 @@ def getSummaryText(rank, top_sent):
         else:
             continue
     
-    print(summary)
     summary_text = ""
+    sum_len = 0
     for i in summary:
         summary_text = summary_text + " " + str(i)
+        sum_len += len(i)
     
+    # text_reduced = sum_len / text_len*100
+    # summary_text = summary_text + "\n\n" + "Text reduced to : " + str("{:.1f}%".format(text_reduced)) + " (" + str(sum_len) + "/" + str(text_len) + ")"
+    summary_text = summary_text + "\n\n" + "Text reduced from : " +  str(text_len) + " words to " + str(sum_len)
+
     print("\nSummary : " + summary_text)
+    print("\nSummary length : ", sum_len)
     return summary_text
